@@ -1,0 +1,77 @@
+plugins {
+    id 'java'
+    id "idea"
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+project.ext.log4jProperties = "src/test/resources/log4j2.properties"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    implementation 'io.cucumber:cucumber-java:7.20.1'
+    implementation 'io.cucumber:cucumber-junit:7.20.1'
+    implementation 'org.apache.logging.log4j:log4j-api:2.19.0' // for logger
+    implementation 'org.apache.logging.log4j:log4j-core:2.19.0' // for logger
+    implementation 'org.apache.commons:commons-lang3:3.17.0' //for not implemented exception
+    implementation 'org.seleniumhq.selenium:selenium-java:4.19.0' // for driver creation and selenium automation
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.3' // for reading json files
+    implementation "net.masterthought:cucumber-reporting:5.8.2"
+    implementation 'com.epam.reportportal:agent-java-cucumber6:5.2.0'
+
+
+
+
+
+//    testImplementation 'io.cucumber:cucumber-java:7.11.2'          // Update version as needed
+//    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.11.2'  // Cucumber JUnit 5 support
+//    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+}
+
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
+
+tasks.register('run', JavaExec) {
+    def configFile = System.getenv("CONFIG")
+    if (null == configFile || !file(configFile).exists()) {
+        println("CONFIG file not provided, or does not exist")
+        println("Run the test by providing the CONFIG file not provided, or does not exist")
+        assert file(configFile).exists()
+    }
+
+    def runnerArgs = [
+            "${configFile}",
+            "steps",
+            "./src/test/resources/com/org/features"
+    ]
+    args = runnerArgs
+    mainClass = "org/example/runner/Runner"
+    classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+}
+
+//tasks.test {
+//    useJUnitPlatform()
+//    testLogging {
+//        events "started", "passed", "skipped", "failed"
+//    }
+//}
+
+//test {
+//    useJUnitPlatform()
+//    testLogging {
+//        events "started", "passed", "skipped", "failed"
+//    }
+//    reports {
+//        html.required.set(true)
+//        junitXml.required.set(true)
+//        html.outputLocation.set(file("./target/unit-test-results"))
+//        junitXml.outputLocation.set(file("./target/unit-test-results"))
+//    }
+//}
