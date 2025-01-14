@@ -12,7 +12,7 @@ import java.util.List;
 @CucumberOptions()
 public class Runner {
         Runner(){
-                String features = "./src/test/resources/com/projectZ/features";
+                String features = "./src/test/resources/com/org/features";
                 String steps = "steps";
                 List<String> args = new ArrayList<>();
                 args.add(features);
